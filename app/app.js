@@ -1,5 +1,5 @@
 angular.module('EbaseApp', [])
-    .controller('FormController', function($scope) {
+    .controller('FormController', function($scope, $http) {
         // record to be sent
         $scope.caform = {
             firstname: null,
@@ -29,6 +29,7 @@ angular.module('EbaseApp', [])
 
         $scope.flag = 'none';
         $scope.succeed = false;
+        $scope.response = null;
 
         $scope.getFlag = function(flag) {
             if (flag === 'none') {
@@ -65,12 +66,50 @@ angular.module('EbaseApp', [])
             $scope.addr.zip = $scope.caform.zip;
         }
 
+
+        var url = 'https://zii2wwqfd2.execute-api.us-east-1.amazonaws.com/project_2_test';
+
+        makeReq = function(mtdData, mtd, mtdUrl) {
+            var req = {
+                method: mtd,
+                url: mtdUrl,
+                data: mtdData
+            }
+            return req;
+        };
+
+        makeCustData = function(form) {
+            var data = {
+                'email': form.email,
+                'address': '1',
+                'firstName': form.firstname,
+                'lastName' : form.lastname,
+                'phoneNumber': form.phone
+            };
+
+            return data;
+        }
+
+        sucCallback = function(response) {
+            $scope.response = response.message;
+            $scope.isSucceed = true;
+        }
+
+        errCallback = function(response) {
+            $scope.response = response.message;
+            $scope.isSucceed = false;
+        }
+
         // connection with api gate way
         $scope.post = function(form) {
             $scope.setCust(form);
             $scope.setAddr(form);
 
-            $scope.flag = 'post';
+            $scope.flag = 'POST';
+
+            custData = makeCustData($scope.form);
+            custReq = makeReq(custData, $scope.flag, url + '/customers');
+            $http.post(custReq, data).then(sucCallback, errCallback);
         };
 
         $scope.put = function(form) {

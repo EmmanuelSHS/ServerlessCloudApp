@@ -35,6 +35,7 @@
             </div>
             <h2> {{caform.firstname}} {{caform.lastname}}</h2>
             <h2> {{flag}}</h2>
+            <h2> response: {{response}} </h2>
             <button type="submit" ng-disabled="loading" ng-click="post(caform)">
                 Submit
             </button>
@@ -61,16 +62,5 @@
                 <tr> <td>Zip <td>{{addr.zip}}</td> </tr>
             </table>
         </div>
-            <!--
-            <form name="signup_form" novalidate ng-submit="post()"> <fieldset>
-                    <button type="submit" class="button radius">Submit</button> </fieldset>
-            </form>
-            <form name="signup_form" novalidate ng-submit="get()"> <fieldset>
-                    <button type="get" class="button radius">Get</button> </fieldset>
-            </form>
-            <form name="signup_form" novalidate ng-submit="put()"> <fieldset>
-                    <button type="update" class="button radius">Update</button> </fieldset>
-            </form>
-            -->
     </body>
 </html>
