@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html ng-app="EbaseApp">
+    <head>
+        <title>Simple Ebase</title>
+        <script src="app/lib/angular.min.js"></script>
+        <script src="app/app.js"></script>
+    </head>
+    <body>
+        <h2>Please fill the form here</h2>
+        <div ng-controller="FormController">
+            <div class="row">
+                <div class="large-12 columns">
+                    <!-- TODO: requirement according to API Gateway -->
+                    <label>Firstname</label> <input type="text"
+                        placeholder="John" name="firstname" ng-model="caform.firstname" ng-maxlength=20 required />
+                    <label>Lastname</label> <input type="text"
+                        placeholder="Smith" name="lastname" ng-model="caform.lastname" ng-maxlength=20 required />
+                    <label>Email</label> <input type="text"
+                        placeholder="js@gmail.com" name="email" ng-model="caform.email" ng-minlength=3 ng-maxlength=20 required />
+                    <label>Phone</label> <input type="text"
+                        placeholder="1234567890" name="phone" ng-model="caform.phone" ng-minlength=3 ng-maxlength=20 required />
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-12 columns">
+                    <label>Line 1</label> <input type="text"
+                        placeholder="400 Broadway" name="street" ng-model="caform.street" ng-minlength=3 ng-maxlength=20 required />
+                    <label>Line 2</label> <input type="text"
+                        placeholder="apt 44" name="number" ng-model="caform.number" ng-maxlength=20 required />
+                    <label>City</label> <input type="text"
+                        placeholder="New York" name="city" ng-model="caform.city" ng-minlength=3 ng-maxlength=20 required />
+                    <label>Zip</label> <input type="text"
+                        placeholder="10027" name="zip" ng-model="caform.zip" ng-minlength=3 ng-maxlength=20 required />
+                </div>
+            </div>
+            <h2> {{caform.firstname}} {{caform.lastname}}</h2>
+            <h2> {{flag}}</h2>
+            <button type="submit" ng-disabled="loading" ng-click="post(caform)">
+                Submit
+            </button>
+            <button type="submit" ng-disabled="loading" ng-click="put(caform)">
+                Update
+            </button>
+            <button type="submit" ng-disabled="loading" ng-click="delete(caform)">
+                Delete
+            </button>
+            <button type="submit" ng-disabled="loading" ng-click="get(caform)">
+                Get
+            </button>
+            <table>
+                <th> Submitted Info </th>
+                <tr> <td>Method</td> <td>{{getFlag(flag)}}</td> </tr>
+                <tr> <td>Status</td> <td>{{isSucceed(succeed)}}</td> </tr>
+                <tr> <td>Firstname <td>{{cust.firstname}}</td> </tr>
+                <tr> <td>Lastname <td>{{cust.lastname}}</td> </tr>
+                <tr> <td>Email <td>{{cust.email}}</td> </tr>
+                <tr> <td>Phone <td>{{cust.phone}}</td> </tr>
+                <tr> <td>Line1 <td>{{addr.street}}</td> </tr>
+                <tr> <td>Number <td>{{addr.number}}</td> </tr>
+                <tr> <td>City <td>{{addr.city}}</td> </tr>
+                <tr> <td>Zip <td>{{addr.zip}}</td> </tr>
+            </table>
+        </div>
+            <!--
+            <form name="signup_form" novalidate ng-submit="post()"> <fieldset>
+                    <button type="submit" class="button radius">Submit</button> </fieldset>
+            </form>
+            <form name="signup_form" novalidate ng-submit="get()"> <fieldset>
+                    <button type="get" class="button radius">Get</button> </fieldset>
+            </form>
+            <form name="signup_form" novalidate ng-submit="put()"> <fieldset>
+                    <button type="update" class="button radius">Update</button> </fieldset>
+            </form>
+            -->
+    </body>
+</html>
