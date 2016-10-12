@@ -17,15 +17,15 @@ angular.module('EbaseApp', [])
             firstname: null,
             lastname: null,
             email: null,
-            phone: null,
-        }
+            phone: null
+        };
 
         $scope.addr = {
             street: null,
             number: null,
             city: null,
             zip: null
-        }
+        };
 
         $scope.flag = 'none';
         $scope.succeed = false;
@@ -64,41 +64,57 @@ angular.module('EbaseApp', [])
             $scope.addr.number = $scope.caform.number;
             $scope.addr.city = $scope.caform.city;
             $scope.addr.zip = $scope.caform.zip;
-        }
+        };
 
 
         var url = 'https://zii2wwqfd2.execute-api.us-east-1.amazonaws.com/project_2_test';
 
+        /* depreciated
         makeReq = function(mtdData, mtd, mtdUrl) {
             var req = {
                 method: mtd,
                 url: mtdUrl,
                 data: mtdData
-            }
+            };
             return req;
         };
+        */
 
-        makeCustData = function(form) {
+        makeCustData = function() {
             var data = {
-                'email': form.email,
-                'address': '1',
-                'firstName': form.firstname,
-                'lastName' : form.lastname,
-                'phoneNumber': form.phone
+                'email': $scope.caform.email,
+                'address': null,
+                'firstName': $scope.caform.firstname,
+                'lastName' : $scope.caform.lastname,
+                'phoneNumber': $scope.caform.phone 
             };
 
             return data;
-        }
+        };
+
+        makeAddrData = function() {
+            var data = {
+                'id': null,
+                'street': $scope.caform.street,
+                'streetNumber': $scope.caform.number,
+                'city': $scope.caform.city,
+                'zipCode': $scope.caform.zip
+            };
+
+            return data;
+        };
+
+        // TODO: setter for table attributes
 
         sucCallback = function(response) {
             $scope.response = response.message;
             $scope.isSucceed = true;
-        }
+        };
 
         errCallback = function(response) {
             $scope.response = response.message;
             $scope.isSucceed = false;
-        }
+        };
 
         // connection with api gate way
         $scope.post = function(form) {
@@ -107,9 +123,9 @@ angular.module('EbaseApp', [])
 
             $scope.flag = 'POST';
 
-            custData = makeCustData($scope.form);
-            custReq = makeReq(custData, $scope.flag, url + '/customers');
-            $http.post(custReq, data).then(sucCallback, errCallback);
+            // call get addr first, then update barcode
+            custData = makeCustData();
+            $http.post(url + '/customers', custData);
         };
 
         $scope.put = function(form) {
@@ -133,4 +149,4 @@ angular.module('EbaseApp', [])
 
             $scope.flag = 'get';
         };
-    })
+    });
