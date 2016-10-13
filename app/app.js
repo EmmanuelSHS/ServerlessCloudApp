@@ -6,11 +6,27 @@ angular.module('EbaseApp', [])
             lastname: null,
             email: null,
             phone: null,
+            aidRef: null,
 
+            aid: null,
             street: null,
             number: null,
             city: null,
             zip: null
+        };
+
+        $scope.data = {
+            'email': null,
+            'address': null,
+            'firstName': null,
+            'lastName' : null,
+            'phoneNumber': null,
+
+            'id': null,
+            'street': null,
+            'streetNumber': null,
+            'city': null,
+            'zipCode': null 
         };
 
         $scope.cust = {
@@ -51,23 +67,7 @@ angular.module('EbaseApp', [])
             }
         };
 
-
-        $scope.setCust = function(form) {
-            $scope.cust.firstname = $scope.caform.firstname;
-            $scope.cust.lastname = $scope.caform.lastname;
-            $scope.cust.email = $scope.caform.email;
-            $scope.cust.phone = $scope.caform.phone;
-        };
-
-        $scope.setAddr = function(form) {
-            $scope.addr.street = $scope.caform.street;
-            $scope.addr.number = $scope.caform.number;
-            $scope.addr.city = $scope.caform.city;
-            $scope.addr.zip = $scope.caform.zip;
-        };
-
-
-        var url = 'https://zii2wwqfd2.execute-api.us-east-1.amazonaws.com/project_2_test';
+        var urlGate = 'https://zii2wwqfd2.execute-api.us-east-1.amazonaws.com/project_2_test';
 
         /* depreciated
         makeReq = function(mtdData, mtd, mtdUrl) {
@@ -80,73 +80,63 @@ angular.module('EbaseApp', [])
         };
         */
 
-        makeCustData = function() {
+        makeData = function() {
             var data = {
                 'email': $scope.caform.email,
                 'address': null,
                 'firstName': $scope.caform.firstname,
                 'lastName' : $scope.caform.lastname,
-                'phoneNumber': $scope.caform.phone 
-            };
+                'phoneNumber': $scope.caform.phone,
 
-            return data;
-        };
-
-        makeAddrData = function() {
-            var data = {
                 'id': null,
                 'street': $scope.caform.street,
                 'streetNumber': $scope.caform.number,
                 'city': $scope.caform.city,
                 'zipCode': $scope.caform.zip
-            };
-
-            return data;
-        };
+            } 
+        }
 
         // TODO: setter for table attributes
+        setAttri = function(field, value) {};
 
-        sucCallback = function(response) {
-            $scope.response = response.message;
-            $scope.isSucceed = true;
+        create = function(url) {
+            $http.post(url, makeData()).then(function(response) {$scope.response = response.message});
         };
 
-        errCallback = function(response) {
-            $scope.response = response.message;
-            $scope.isSucceed = false;
+        read = function(url) {
+            
+        };
+
+        update = function(url) {
+
+        };
+
+        delt = function(url) {
+            
         };
 
         // connection with api gate way
         $scope.post = function(form) {
-            $scope.setCust(form);
-            $scope.setAddr(form);
-
             $scope.flag = 'POST';
 
             // call get addr first, then update barcode
-            custData = makeCustData();
-            $http.post(url + '/customers', custData);
+            //custData = makeCustData();
+            //$http.post(urlGate + '/customers', custData).then(callBack);
+            create(urlGate + '/customers')
         };
 
         $scope.put = function(form) {
             //
-            $scope.setCust(form);
-            $scope.setAddr(form);
-            
-            $scope.flag = 'put';
+            $scope.flag = 'PUT';
         };
 
-        $scope.delete = function(form) {
+        $scope.del = function(form) {
             //
-            $scope.setCust(form);
-
-            $scope.flag = 'delete';
+            $scope.flag = 'DELETE';
         };
 
         $scope.get = function(form) {
             //
-            $scope.setCust(form);
-
-            $scope.flag = 'get';
+            $scope.flag = 'GET';
         };
     });
