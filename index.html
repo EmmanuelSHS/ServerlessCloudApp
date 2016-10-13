@@ -38,11 +38,11 @@
             <table>
                 <tr>
                     <td>Firstname</td>
-                    <td><input type="text" placeholder="John" name="firstname" ng-model="caform.firstname" required /></td>
+                    <td><input type="text" placeholder="John" name="firstname" ng-model="caform.firstName" required /></td>
                 </tr>
                 <tr>
                     <td>Lastname</td> 
-                    <td><input type="text"placeholder="Smith" name="lastname" ng-model="caform.lastname" required /></td>
+                    <td><input type="text"placeholder="Smith" name="lastname" ng-model="caform.lastName" required /></td>
                 </tr>
                 <tr>
                     <td>Email</td>
@@ -50,7 +50,7 @@
                 </tr>
                 <tr>
                     <td>Phone</td>
-                    <td><input type="text" placeholder="1234567890" name="phone" ng-model="caform.phone" ng-minlength=3 ng-maxlength=10 required /></td>
+                    <td><input type="text" placeholder="1234567890" name="phone" ng-model="caform.phoneNumber" ng-minlength=3 ng-maxlength=10 required /></td>
                 </tr>
             </table>
         <form>
@@ -86,33 +86,35 @@
             </table>
         </form>
 
-            <h2> {{caform.firstname}} {{caform.lastname}}</h2>
+            <h2> {{caform.firstName}} {{caform.lastName}}</h2>
             <h2> {{flag}}</h2>
+            <h2> ret status: {{status}}</h2>
+            <h2> user get: {{msg}}</h2>
             <h2> response: {{response}} </h2>
-            <button type="submit" ng-disabled="loading" ng-click="post(caform)">
+            <button type="submit" ng-disabled="loading" ng-click="post()">
                 Submit
             </button>
-            <button type="submit" ng-disabled="loading" ng-click="put(caform)">
+            <button type="submit" ng-disabled="loading" ng-click="put()">
                 Update
             </button>
-            <button type="submit" ng-disabled="loading" ng-click="del(caform)">
+            <button type="submit" ng-disabled="loading" ng-click="del()">
                 Delete
             </button>
-            <button type="submit" ng-disabled="loading" ng-click="get(caform)">
+            <button type="submit" ng-disabled="loading" ng-click="get()">
                 Get
             </button>
             <table>
                 <th> Submitted Info </th>
                 <tr> <td>Method</td> <td>{{getFlag(flag)}}</td> </tr>
                 <tr> <td>Status</td> <td>{{isSucceed(succeed)}}</td> </tr>
-                <tr> <td>Firstname <td>{{cust.firstname}}</td> </tr>
-                <tr> <td>Lastname <td>{{cust.lastname}}</td> </tr>
-                <tr> <td>Email <td>{{cust.email}}</td> </tr>
-                <tr> <td>Phone <td>{{cust.phone}}</td> </tr>
-                <tr> <td>Line1 <td>{{addr.street}}</td> </tr>
-                <tr> <td>Number <td>{{addr.number}}</td> </tr>
-                <tr> <td>City <td>{{addr.city}}</td> </tr>
-                <tr> <td>Zip <td>{{addr.zip}}</td> </tr>
+                <tr> <td>Firstname <td>{{caform.firstName}}</td> </tr>
+                <tr> <td>Lastname <td>{{caform.lastName}}</td> </tr>
+                <tr> <td>Email <td>{{caform.email}}</td> </tr>
+                <tr> <td>Phone <td>{{caform.phoneNumber}}</td> </tr>
+                <tr> <td>Line1 <td>{{caform.street}}</td> </tr>
+                <tr> <td>Number <td>{{caform.streetNumber}}</td> </tr>
+                <tr> <td>City <td>{{caform.city}}</td> </tr>
+                <tr> <td>Zip <td>{{caform.zipCode}}</td> </tr>
             </table>
         </div>
     </body>

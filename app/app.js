@@ -2,50 +2,24 @@ angular.module('EbaseApp', [])
     .controller('FormController', function($scope, $http) {
         // record to be sent
         $scope.caform = {
-            firstname: null,
-            lastname: null,
+            firstName: null,
+            lastName: null,
             email: null,
-            phone: null,
-            aidRef: null,
+            phoneNumber: null,
+            address: null,
 
-            aid: null,
+            id: null,
             street: null,
-            number: null,
+            streetNumber: null,
             city: null,
-            zip: null
-        };
-
-        $scope.data = {
-            'email': null,
-            'address': null,
-            'firstName': null,
-            'lastName' : null,
-            'phoneNumber': null,
-
-            'id': null,
-            'street': null,
-            'streetNumber': null,
-            'city': null,
-            'zipCode': null 
-        };
-
-        $scope.cust = {
-            firstname: null,
-            lastname: null,
-            email: null,
-            phone: null
-        };
-
-        $scope.addr = {
-            street: null,
-            number: null,
-            city: null,
-            zip: null
+            zipCode: null
         };
 
         $scope.flag = 'none';
         $scope.succeed = false;
+        $scope.msg = 'nothing';
         $scope.response = null;
+        $scope.status = null;
 
         $scope.getFlag = function(flag) {
             if (flag === 'none') {
@@ -69,74 +43,98 @@ angular.module('EbaseApp', [])
 
         var urlGate = 'https://zii2wwqfd2.execute-api.us-east-1.amazonaws.com/project_2_test';
 
-        /* depreciated
-        makeReq = function(mtdData, mtd, mtdUrl) {
-            var req = {
-                method: mtd,
-                url: mtdUrl,
-                data: mtdData
+        initform = function() {
+            $scope.caform = {
+                firstName: null,
+                lastName: null,
+                email: null,
+                phoneNumber: null,
+                address: null,
+
+                id: null,
+                street: null,
+                streetNumber: null,
+                city: null,
+                zipCode: null
             };
-            return req;
         };
-        */
 
-        makeData = function() {
-            var data = {
-                'email': $scope.caform.email,
-                'address': null,
-                'firstName': $scope.caform.firstname,
-                'lastName' : $scope.caform.lastname,
-                'phoneNumber': $scope.caform.phone,
-
-                'id': null,
-                'street': $scope.caform.street,
-                'streetNumber': $scope.caform.number,
-                'city': $scope.caform.city,
-                'zipCode': $scope.caform.zip
-            } 
-        }
-
-        // TODO: setter for table attributes
-        setAttri = function(field, value) {};
+        callback = function(response) {
+            $scope.status = response.status;
+            $scope.response = response;
+        };
 
         create = function(url) {
-            $http.post(url, makeData()).then(function(response) {$scope.response = response.message});
+            $http.post(url, $scope.caform).then(callback, callback);
         };
 
         read = function(url) {
-            
+            $http.get(url).then(callback, callback);
         };
 
         update = function(url) {
-
+            $http.put(url, $scope.caform).then(callback, callback);
         };
 
         delt = function(url) {
-            
+            $http.delete(url).then(callback, callback);
         };
 
         // connection with api gate way
-        $scope.post = function(form) {
+        $scope.post = function() {
             $scope.flag = 'POST';
 
-            // call get addr first, then update barcode
-            //custData = makeCustData();
-            //$http.post(urlGate + '/customers', custData).then(callBack);
-            create(urlGate + '/customers')
+            // TODO: call get addr first, then update barcode
+
+            $scope.caform.address = '33';
+            read(urlGate + '/addresses' + '/' + $scope.caform.id)
+            create(urlGate + '/customers');
         };
 
-        $scope.put = function(form) {
+        $scope.put = function() {
             //
             $scope.flag = 'PUT';
+            // get addr id first
+            $scope.caform.address = 1;
+            update(urlGate + '/customers' + '/' + $scope.caform.email);
+            // TODO: put here, we update addr to a specific aid, or assign to another aid?
         };
 
-        $scope.del = function(form) {
+        $scope.del = function() {
             //
             $scope.flag = 'DELETE';
+            delt(urlGate + '/customers' + '/' + $scope.caform.email);
+
+            if ($scope.status == 200) {
+                $scope.msg = "Deleted";
+            } else {
+                $scope.msg = "Failed, please check syntax";
+            };
         };
 
-        $scope.get = function(form) {
+        $scope.get = function() {
             //
             $scope.flag = 'GET';
+            read(urlGate + '/customers' + '/' + $scope.caform.email);
+
+            //get addr id
+            if ($scope.status == 200) {
+                $scope.caform.firstName = $scope.response.data.firstName;
+                $scope.caform.lastName = $scope.response.data.lastName;
+                $scope.caform.phoneNumber = $scope.response.data.phoneNumber;
+
+                read(urlGate + '/addresses' + '/' + $scope.response.data.address.href);
+                if ($scope.status == 200) {
+                    $scope.caform.street = $scope.response.data.street;
+                    $scope.caform.streetNumber = $scope.response.data.streetNumber;
+                    $scope.caform.city = $scope.response.data.city;
+                    $scope.caform.zipCode = $scope.response.data.zipCode;
+                } else {
+                    $scope.msg = 'Address Not Exists';
+                    initform();
+                };
+            } else {
+                $scope.msg = 'User Not Exists';
+            }
         };
     });
