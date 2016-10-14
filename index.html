@@ -7,25 +7,7 @@
         <script type="text/javascript" src="app/lib/jquery.min.js"></script>
         <script type="text/javascript" src="app/lib/jquery.liveaddress.js"></script>
         <script src="app/lib/angular.min.js"></script>
-        <!--
-        <script type="text/javascript">
-            var liveaddress = jQuery.LiveAddress({
-                key: "25739744617047893",
-                debug: true,
-                target: "US",
-                address: [{
-                    address1: '#street',
-                    address2: '#apt',
-                    locality: '#city',
-                    administrative_area: '#state',
-                    postal_code: '#zip',
-                    country: '#country'
-                }],
-                waitForStreet: true
-            });
-        </script>
-        -->
-        <script src="app/lib/jquery.liveaddress.init.js"></script>
+        <script type="text/javascript" src="app/lib/jquery.liveaddress.init.js"></script>
         <script src="app/app.js"></script>
     </head>
     <body>
@@ -53,6 +35,8 @@
                     <td><input type="text" placeholder="1234567890" name="phone" ng-model="caform.phoneNumber" ng-minlength=3 ng-maxlength=10 required /></td>
                 </tr>
             </table>
+            <input type="text"name="delivery_point_barcode" ng-model="aid">
+            <h2> {{aid}}</h2>
         <form>
             <header>
                 <h3>Address</h3>

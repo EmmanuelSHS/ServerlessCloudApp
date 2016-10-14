@@ -20,6 +20,7 @@ angular.module('EbaseApp', [])
         $scope.msg = 'nothing';
         $scope.response = null;
         $scope.status = null;
+        $scope.aid = null;
 
         $scope.getFlag = function(flag) {
             if (flag === 'none') {
