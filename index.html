@@ -7,7 +7,7 @@
         <script type="text/javascript" src="app/lib/jquery.min.js"></script>
         <script type="text/javascript" src="app/lib/jquery.liveaddress.js"></script>
         <script src="app/lib/angular.min.js"></script>
-        <script type="text/javascript" src="app/lib/jquery.liveaddress.init.js"></script>
+        <script type="text/javascript" src="app/jquery.liveaddress.init.js"></script>
         <script src="app/app.js"></script>
     </head>
     <body>
@@ -35,13 +35,16 @@
                     <td><input type="text" placeholder="1234567890" name="phone" ng-model="caform.phoneNumber" ng-minlength=3 ng-maxlength=10 required /></td>
                 </tr>
             </table>
-            <input type="text" name="delivery_point_barcode" id="delivery_point_barcode" ng-model="aid">
-            <h2> AID: {{aid}}</h2>
+            <h2> AID: {{addrid}}</h2>
         <form>
             <header>
                 <h3>Address</h3>
             </header>
             <table>
+                <tr>
+                    <td>Address Code</td> 
+                    <td><input type="text" name="delivery_point_barcode" id="delivery_point_barcode" ng-model="addrid" placeholder="access from smartystreet" readonly></td>
+                </tr>
                 <tr>
                     <td>Line 1</td> 
                     <td><input type="text" id="street"
@@ -50,7 +53,7 @@
                 <tr>
                     <td>Line 2</td> 
                     <td><input type="text" id="apt"
-                        placeholder="apt 44" name="apt" ng-model="caform.number" ng-maxlength=20 required /></td>
+                        placeholder="apt 44" name="apt" ng-model="caform.streetNumber" ng-maxlength=20 required /></td>
                 </tr>
                 <tr>
                     <td>City</td> 
@@ -65,7 +68,7 @@
                 <tr>
                     <td>Zip</td> 
                     <td><input type="text" id="ZIP"
-                        placeholder="10027" name="ZIP" ng-model="caform.zip" ng-minlength=3 ng-maxlength=20 required /></td>
+                        placeholder="10027" name="ZIP" ng-model="caform.zipCode" ng-minlength=3 ng-maxlength=20 required /></td>
                 </tr>
             </table>
         </form>

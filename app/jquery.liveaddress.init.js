@@ -8,7 +8,7 @@
                     locality: '#city',
                     administrative_area: '#state',
                     postal_code: '#ZIP',
-                    country: '#country'
+                    //country: '#country'
                 }],
                 waitForStreet: true
             });
@@ -19,7 +19,11 @@
                     alert(data.response.chosen);
                     console.log(data.response.chosen.delivery_point_barcode);
                     jQuery('#delivery_point_barcode').val(data.response.chosen.delivery_point_barcode);
+                    // trigger input for all fields auto-filled
                     $('#delivery_point_barcode').trigger("input");
+                    $('#street').trigger("input");
+                    $('#city').trigger("input");
+                    $('#ZIP').trigger("input");
                 }
                 previousHandler(event, data);
             });
