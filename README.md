@@ -7,7 +7,7 @@ Course Project for CU E6998 Modern Serverless Cloud App.
 
 ## TODO
 
-* Embed SmartyStreet API
+* Embed SmartyStreet API -- successfully get delivery barcode
 
 * Soft type check
 

@@ -1,5 +1,7 @@
 angular.module('EbaseApp', [])
     .controller('FormController', function($scope, $http) {
+        // dyanmic updator
+
         // record to be sent
         $scope.caform = {
             firstName: null,
@@ -83,6 +85,7 @@ angular.module('EbaseApp', [])
 
         // connection with api gate way
         $scope.post = function() {
+            console.log("Starting post new record");
             $scope.flag = 'POST';
 
             // TODO: call get addr first, then update barcode
