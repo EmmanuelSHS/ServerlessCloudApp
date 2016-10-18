@@ -88,7 +88,7 @@ angular.module('EbaseApp', [])
             // TODO: call get addr first, then update barcode
 
             $scope.caform.address = '33';
-            read(urlGate + '/addresses' + '/' + $scope.caform.id)
+            //read(urlGate + '/addresses' + '/' + $scope.caform.id)
             create(urlGate + '/customers');
         };
 
