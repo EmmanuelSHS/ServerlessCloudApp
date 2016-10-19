@@ -1,5 +1,33 @@
-angular.module('EbaseApp', [])
-    .controller('FormController', function($scope, $http) {
+var ebase = angular.module('EbaseApp', []);
+
+ebase.factory('restfulFactory', function($http) {
+    var factory = {};
+
+    // main
+    factory.create = function(url) {
+        console.log("POST " + url);
+        return $http.post(url, $scope.caform);
+    };
+
+    factory.read = function(url) {
+        console.log("GET " + url);
+        return $http.get(url);
+    };
+
+    factory.update = function(url) {
+        console.log("PUT " + url);
+        return $http.put(url, $scope.caform);
+    };
+
+    factory.delete = function(url) {
+        console.log("DELETE " + url);
+        return $http.delete(url);
+    };
+
+    return factory;
+});
+
+ebase.controller('FormController', function($scope, $http, restfulFactory) {
         var urlGate = 'https://zii2wwqfd2.execute-api.us-east-1.amazonaws.com/project_2_test';
 
         // record to be sent
@@ -61,112 +89,99 @@ angular.module('EbaseApp', [])
         };
 
         // aux
-        callback = function(response) {
+        preCallback = function(response) {
             $scope.status = response.status;
-            //$scope.response = response;
+            $scope.response = response;
             if ($scope.status == 200) {
-                console.log("Method succeeded");
+                console.log(response.config.method + " Method succeeded");
             } else {
-                console.log("Method failed with code " + $scope.status);
+                console.log(response.config.method + " Method failed with code " + $scope.status);
             }
-            return response;
         };
 
         validation = function() {
             
         };
 
-        // main
-        create = function(url) {
-            console.log("POST " + url);
-            $http.post(url, $scope.caform).then(callback, callback);
-        };
-
-        read = function(url) {
-            console.log("GET " + url);
-            $http.get(url).then(callback, callback);
-        };
-
-        update = function(url) {
-            console.log("PUT " + url);
-            $http.put(url, $scope.caform).then(callback, callback);
-        };
-
-        delt = function(url) {
-            console.log("DELETE " + url);
-            $http.delete(url).then(callback, callback);
-        };
 
         // connection with api gate way
         $scope.post = function() {
             console.log("Start POST " + JSON.stringify($scope.caform));
             $scope.flag = 'POST';
 
-            // TODO: call get addr first, then update barcode
-
+            // create anyway to save calls
             //$scope.caform.address = '33';
-            //read(urlGate + '/addresses' + '/' + $scope.caform.id)
-            create(urlGate + '/customers');
+            restfulFactory.create(urlGate + '/addresses' + '/' + $scope.caform.id);
+            restfulFactory.create(urlGate + '/customers').then(function(response) {
+                preCallback(response);
+            }, function(response) {
+                preCallback(response);
+            });
+            console.log("End POST " + JSON.stringify($scope.caform));
         };
 
         $scope.put = function() {
-            //
+            // Assume if addr modified, we need to create & modify the reference
             console.log("Start PUT " + JSON.stringify($scope.caform));
             $scope.flag = 'PUT';
+
             // get addr id first
             $scope.caform.address = 1;
-            update(urlGate + '/customers' + '/' + $scope.caform.email);
-            // TODO: put here, we update addr to a specific aid, or assign to another aid?
+            restfulFactory.update(urlGate + '/customers' + '/' + $scope.caform.email).then(function(response) {
+                preCallback(response);
+                restfulFactory.create(urlGate + '/addresses' + '/' + $scope.caform.id);
+            }, function(response) {
+                preCallback(response);
+            });
+
+            console.log("END PUT " + JSON.stringify($scope.caform));
         };
 
         $scope.del = function() {
             //
             console.log("Start DELETE " + JSON.stringify($scope.caform));
-            $scope.flag = 'DELETE';
-            delt(urlGate + '/customers' + '/' + $scope.caform.email);
 
-            if ($scope.status == 200) {
-                $scope.msg = "Deleted";
-            } else {
-                $scope.msg = "Failed, please check syntax";
-            };
+            $scope.flag = 'DELETE';
+            restfulFactory.delete(urlGate + '/customers' + '/' + $scope.caform.email).then(function(response) {
+                preCallback(response);
+            }, function(response) {
+                preCallback(response);
+            });
+
+            console.log("END DELETE " + JSON.stringify($scope.caform));
         };
 
         $scope.get = function() {
             //
             console.log("Start GET " + JSON.stringify($scope.caform));
             $scope.flag = 'GET';
-            // TODO: find a way to allow locking here
-            read(urlGate + '/customers' + '/' + $scope.caform.email).then(function(data) {
+
+            restfulFactory.read(urlGate + '/customers' + '/' + $scope.caform.email).then(function(response) {
+                preCallback(response);
                 if ($scope.status != 200) {
                     $scope.msg = 'User Not Exists';
                     return;
                 }
-                $scope.caform.firstName = data.data.firstName;
-                $scope.caform.lastName = data.data.lastName;
-                $scope.caform.phoneNumber = data.data.phoneNumber;
+                $scope.caform.firstName = response.data.firstName;
+                $scope.caform.lastName = response.data.lastName;
+                $scope.caform.phoneNumber = response.data.phoneNumber;
 
+                restfulFactory.read(urlGate + '/addresses' + '/' + response.data.address.href).then(function(response) {
+                    preCallback(response);
+                    $scope.caform.id = response.data.id;
+                    $scope.caform.street = response.data.street;
+                    $scope.caform.streetNumber = response.data.streetNumber;
+                    $scope.caform.city = response.data.city;
+                    $scope.caform.zipCode = response.data.zipCode;
+                }, function(response) {
+                    preCallback(response);
+                });
+
+            }, function(response) {
+                preCallback(response);
+                return;
             });
 
-            //get addr id
-            //if ($scope.status != 200) {
-            //    $scope.msg = 'User Not Exists';
-            //    return;
-            //};
-
-            //$scope.caform.firstName = $scope.response.data.firstName;
-            //$scope.caform.lastName = $scope.response.data.lastName;
-            //$scope.caform.phoneNumber = $scope.response.data.phoneNumber;
-
-            //read(urlGate + '/addresses' + '/' + $scope.response.data.address.href);
-            //if ($scope.status == 200) {
-            //    $scope.caform.street = $scope.response.data.street;
-            //    $scope.caform.streetNumber = $scope.response.data.streetNumber;
-            //    $scope.caform.city = $scope.response.data.city;
-            //    $scope.caform.zipCode = $scope.response.data.zipCode;
-            //} else {
-            //    $scope.msg = 'Address Not Exists';
-            //    initform();
-            //};
+            console.log("End GET " + JSON.stringify($scope.caform));
         };
     });
