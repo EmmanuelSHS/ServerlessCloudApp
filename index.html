@@ -13,9 +13,8 @@
     <body>
         <h2>Please fill the form here</h2>
         <div ng-controller="FormController">
-            <!-- TODO: requirement according to API Gateway -->
             <header>
-                <h3>Basic</h3>
+                <h3>Personal Information</h3>
             </header>
             <table>
                 <tr>
@@ -35,7 +34,7 @@
                     <td><input type="text" placeholder="1234567890" name="phone" ng-model="caform.phoneNumber" ng-minlength=3 ng-maxlength=10 required /></td>
                 </tr>
             </table>
-            <h2> AID: {{addrid}}</h2>
+            <!-- <h2> AID: {{addrid}}</h2> -->
         <form>
             <header>
                 <h3>Address</h3>
@@ -73,11 +72,13 @@
             </table>
         </form>
 
+        <!--
             <h2> {{caform.firstName}} {{caform.lastName}}</h2>
             <h2> {{flag}}</h2>
             <h2> ret status: {{status}}</h2>
             <h2> user get: {{msg}}</h2>
             <h2> response: {{response}} </h2>
+        -->
             <button type="submit" ng-disabled="loading" ng-click="post()">
                 Submit
             </button>

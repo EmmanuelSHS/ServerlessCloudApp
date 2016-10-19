@@ -50,7 +50,6 @@ ebase.controller('FormController', function($scope, $http, restfulFactory) {
         $scope.msg = 'nothing';
         $scope.response = null;
         $scope.status = null;
-        $scope.addrid = null;
 
         $scope.getFlag = function(flag) {
             if (flag === 'none') {
@@ -94,13 +93,26 @@ ebase.controller('FormController', function($scope, $http, restfulFactory) {
             $scope.response = response;
             if ($scope.status == 200) {
                 console.log(response.config.method + " Method succeeded");
+                $scope.msg = response.config.method + " succeeded";
             } else {
                 console.log(response.config.method + " Method failed with code " + $scope.status);
+                if ($scope.status == 400) {
+                    $scope.msg = "Input fields incomplete, Please fill";
+                } else if ($scope.status == 404) {
+                    $scope.msg = "Record not found";
+                } else if ($scope.status == 405) {
+                    $scope.msg = "Unsupported Catch " + $scope.status;
+                }
             }
         };
 
-        validation = function() {
-            
+        validated = function(attr) {
+                if (attr === null) {
+                    $scope.msg = attr + " is NULL";
+                    console.log($scope.msg);
+                    return false;
+                }
+            return true;
         };
 
 
@@ -108,6 +120,12 @@ ebase.controller('FormController', function($scope, $http, restfulFactory) {
         $scope.post = function() {
             console.log("Start POST " + JSON.stringify($scope.caform));
             $scope.flag = 'POST';
+
+            // validation
+            var attr;
+            for (attr in $scope.caform) {
+                if (!validated(attr)) {return;}
+            }
 
             // create anyway to save calls
             //$scope.caform.address = '33';
@@ -125,6 +143,9 @@ ebase.controller('FormController', function($scope, $http, restfulFactory) {
             console.log("Start PUT " + JSON.stringify($scope.caform));
             $scope.flag = 'PUT';
 
+            // TODO: sync with backend
+            if (!validated()) {return;}
+
             // get addr id first
             $scope.caform.address = 1;
             restfulFactory.update(urlGate + '/customers' + '/' + $scope.caform.email).then(function(response) {
@@ -140,8 +161,10 @@ ebase.controller('FormController', function($scope, $http, restfulFactory) {
         $scope.del = function() {
             //
             console.log("Start DELETE " + JSON.stringify($scope.caform));
-
             $scope.flag = 'DELETE';
+
+            if (!validated($scope.caform.email)) {return;}
+
             restfulFactory.delete(urlGate + '/customers' + '/' + $scope.caform.email).then(function(response) {
                 preCallback(response);
             }, function(response) {
@@ -155,6 +178,7 @@ ebase.controller('FormController', function($scope, $http, restfulFactory) {
             //
             console.log("Start GET " + JSON.stringify($scope.caform));
             $scope.flag = 'GET';
+            if (!validated($scope.caform.email)) {return;}
 
             restfulFactory.read(urlGate + '/customers' + '/' + $scope.caform.email).then(function(response) {
                 preCallback(response);
