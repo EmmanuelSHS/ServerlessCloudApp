@@ -1,109 +1,138 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html ng-app="EbaseApp">
-    <head>
-        <title>Simple Ebase</title>
-        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-        <meta content="utf-8" http-equiv="encoding">
-        <script type="text/javascript" src="app/lib/jquery.min.js"></script>
-        <script type="text/javascript" src="app/lib/jquery.liveaddress.js"></script>
-        <script src="app/lib/angular.min.js"></script>
-        <script type="text/javascript" src="app/jquery.liveaddress.init.js"></script>
-        <script src="app/app.js"></script>
-    </head>
-    <body>
-        <h2>Please fill the form here</h2>
-        <div ng-controller="FormController">
-            <header>
-                <h3>Personal Information</h3>
-            </header>
-            <table>
-                <tr>
-                    <td>Firstname</td>
-                    <td><input type="text" placeholder="John" name="firstname" ng-model="caform.firstName" required /></td>
-                </tr>
-                <tr>
-                    <td>Lastname</td> 
-                    <td><input type="text"placeholder="Smith" name="lastname" ng-model="caform.lastName" required /></td>
-                </tr>
-                <tr>
-                    <td>Email</td>
-                    <td><input type="text" placeholder="js@gmail.com" name="email" ng-model="caform.email" ng-minlength=3 required /></td>
-                </tr>
-                <tr>
-                    <td>Phone</td>
-                    <td><input type="text" placeholder="1234567890" name="phone" ng-model="caform.phoneNumber" ng-minlength=3 ng-maxlength=10 required /></td>
-                </tr>
-            </table>
-            <!-- <h2> AID: {{addrid}}</h2> -->
-        <form>
-            <header>
-                <h3>Address</h3>
-            </header>
-            <table>
-                <tr>
-                    <td>Address Code</td> 
-                    <td><input type="text" name="delivery_point_barcode" id="delivery_point_barcode" ng-model="addrid" placeholder="access from smartystreet" readonly></td>
-                </tr>
-                <tr>
-                    <td>Line 1</td> 
-                    <td><input type="text" id="street"
-                        placeholder="400 Broadway" name="street" ng-model="caform.street" ng-minlength=3 ng-maxlength=20 required /></td>
-                </tr>
-                <tr>
-                    <td>Line 2</td> 
-                    <td><input type="text" id="apt"
-                        placeholder="apt 44" name="apt" ng-model="caform.streetNumber" ng-maxlength=20 required /></td>
-                </tr>
-                <tr>
-                    <td>City</td> 
-                    <td><input type="text" id="city"
-                        placeholder="New York" name="city" ng-model="caform.city" ng-minlength=3 ng-maxlength=20 required /></td>
-                </tr>
-                <tr>
-                    <td>State</td> 
-                    <td><input type="text" id="state"
-                        placeholder="NY" name="state" /></td>
-                </tr>
-                <tr>
-                    <td>Zip</td> 
-                    <td><input type="text" id="ZIP"
-                        placeholder="10027" name="ZIP" ng-model="caform.zipCode" ng-minlength=3 ng-maxlength=20 required /></td>
-                </tr>
-            </table>
-        </form>
+<head>
+<title>Video</title>
 
+<script type="text/javascript" src="js/facebook.js"></script>
+<script src="app/lib/angular.min.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap-tpls.min.js"></script>
+<script src="app/app.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<meta charset="UTF-8">
+</head>
+<body>
+  <nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">6998</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
         <!--
-            <h2> {{caform.firstName}} {{caform.lastName}}</h2>
-            <h2> {{flag}}</h2>
-            <h2> ret status: {{status}}</h2>
-            <h2> user get: {{msg}}</h2>
-            <h2> response: {{response}} </h2>
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li role="separator" class="divider"></li>
+              <li class="dropdown-header">Nav header</li>
+              <li><a href="#">Separated link</a></li>
+              <li><a href="#">One more separated link</a></li>
+            </ul>
+          </li>
         -->
-            <button type="submit" ng-disabled="loading" ng-click="post()">
-                Submit
-            </button>
-            <button type="submit" ng-disabled="loading" ng-click="put()">
-                Update
-            </button>
-            <button type="submit" ng-disabled="loading" ng-click="del()">
-                Delete
-            </button>
-            <button type="submit" ng-disabled="loading" ng-click="get()">
-                Get
-            </button>
-            <table>
-                <th> Submitted Info </th>
-                <tr> <td>Method</td> <td>{{getFlag(flag)}}</td> </tr>
-                <tr> <td>Status</td> <td>{{isSucceed(succeed)}}</td> </tr>
-                <tr> <td>Firstname <td>{{caform.firstName}}</td> </tr>
-                <tr> <td>Lastname <td>{{caform.lastName}}</td> </tr>
-                <tr> <td>Email <td>{{caform.email}}</td> </tr>
-                <tr> <td>Phone <td>{{caform.phoneNumber}}</td> </tr>
-                <tr> <td>Line1 <td>{{caform.street}}</td> </tr>
-                <tr> <td>Number <td>{{caform.streetNumber}}</td> </tr>
-                <tr> <td>City <td>{{caform.city}}</td> </tr>
-                <tr> <td>Zip <td>{{caform.zipCode}}</td> </tr>
-            </table>
+        </ul>
+        <div ng-controller="LoginController" class="nav navbar-form navbar-right active">
+          <a ng-show="!shared.data.hasLogin" class="btn btn-primary" ng-click="facebookLogin()">Login With Facebook</a>
+          <div ng-show="shared.data.hasLogin" class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Welcome {{shared.data.profile.firstName}}!<span class="caret"></span></a>
+            <ul class ="dropdown-menu">
+              <li><a href='#' ng-click="openProfileDialog()">Profile</a></li>
+              <li><a href='#' ng-click="logout()">Logout</a></li>
+            </ul>
+          </div>
+        </div>    
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+  <div ng-controller="ContentController" class="container">
+      <ul class="nav nav-pills">
+        <li role="presentation" ng-repeat="level in contentLevels track by $index" ng-class="{'active': currentLevel == $index}" ng-click="switchToLevel($index)"><a href="#">{{level}}</a></li>
+      </ul>
+
+      <!-- Properties -->
+  </div>
+  <script type="text/ng-template" id="ProfileModal.html">
+    <div class="modal-header text-center">
+      <button type="button" class="close" ng-click="closeModal()">x</button>
+      <h3>Login</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+          <div class="form-group col-lg-6" ng-class="{'has-error': !formValid.firstName}">
+            <label>First Name</label>
+            <input ng-model="form.firstName" type="text" class="form-control" placeholder="First Name">
+          </div>
+          <div class="form-group col-lg-6" ng-class="{'has-error': !formValid.lastName}">
+            <label>Last Name</label>
+            <input ng-model="form.lastName" type="text" class="form-control" placeholder="Last Name">
+          </div>
         </div>
-    </body>
+        <div class="row">
+          <div class="form-group col-lg-6" ng-class="{'has-error': !formValid.email}">
+            <label>Email</label>
+            <input class="form-control" ng-model="form.email" type="text" placeholder="Email">
+          </div>
+          <div class="form-group col-lg-6" ng-class="{'has-error': !formValid.phoneNumber}">
+            <label>Phone Number</label>
+            <input ng-model="form.phoneNumber" type="tel" class="form-control" placeholder="Phone Number">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-lg-6" ng-class="{'has-error': !formValid.address.street}">
+            <label>Street</label>
+            <input ng-model="form.address.street" type="text" class="form-control" placeholder="Street">
+          </div>
+          <div class="form-group col-lg-6" ng-class="{'has-error': !formValid.address.streetNumber}">
+            <label>Street Number</label>
+            <input ng-model="form.address.streetNumber" type="text" class="form-control" placeholder="Street Number">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-lg-6" ng-class="{'has-error': !formValid.address.city}">
+            <label>City</label>
+            <input ng-model="form.address.city" type="text" class="form-control" placeholder="City">
+          </div>
+          <div class="form-group col-lg-6" ng-class="{'has-error': !formValid.address.zipCode}">
+            <label>Zip Code</label>
+            <input ng-model="form.address.zipCode" type="text" class="form-control" placeholder="Zip Code">
+          </div>
+        </div>
+        <p>
+          <!--<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+          </fb:login-button>
+          -->
+          <button class="btn btn-primary" ng-show="!shared.data.hasLogin" ng-click="register()"> Register </button>
+        </p>
+    </div>
+    <!---
+    <div class="modal-footer">
+      <a ng-click="newUser=!newUser" href="#">{{newUser ? 'Already have account? Sign in now!' : 'New to us? Sign up now!'}}</a>
+    </div>
+    -->
+  </script>
+</body>
 </html>
