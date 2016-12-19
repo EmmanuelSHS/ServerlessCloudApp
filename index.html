@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="EbaseApp">
 <head>
-<title>Video</title>
+<title>6998</title>
 
 <script type="text/javascript" src="js/facebook.js"></script>
 <script src="app/lib/angular.min.js"></script>
@@ -69,16 +69,338 @@
     </div>
   </nav>
   <div ng-controller="ContentController" class="container">
-      <ul class="nav nav-pills">
-        <li role="presentation" ng-repeat="level in contentLevels track by $index" ng-class="{'active': currentLevel == $index}" ng-click="switchToLevel($index)"><a href="#">{{level}}</a></li>
-      </ul>
+      <div class="panel">
+        <div class="panel-body">
+          <ul class="nav nav-pills">
+            <li role="presentation" ng-repeat="level in contentLevels track by $index" ng-class="{'active': currentLevel == $index}" ng-click="switchToLevel($index)"><a href="#">{{level}}</a></li>
+            <li ng-if="shared.data.hasLogin && shared.data.profile.isAdmin">
+              <a ng-click="createContent()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
 
-      <!-- Properties -->
+      <div ng-if="showCreateContent" class="panel panel-primary">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-6">
+              <h5>Create New Content</h5>
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="close" ng-click="closeShowCreateContent()">x</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="form-group col-lg-6">
+              <label>Name</label>
+              <input ng-model="newContent.name" type="text" class="form-control" placeholder="Name">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <label>Description</label>
+              <textarea ng-model="newContent.description" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <button class="btn btn-primary pull-right" ng-click="createContentSubmit()">Create</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-info" ng-if="currentLevel == 0" ng-repeat="property in contents.properties track by $index">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <h3 ng-click="select(contents.properties, $index, 1)">  
+                {{property.name}}
+              </h3> 
+            </div>
+            <div class="col-md-2 pull-right">
+              <h5 class="pull-right">
+                <a ng-click="property.showComments=!property.showComments">
+                  Comments
+                  <span class="caret"></span>
+                </a> 
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <a class="thumbnail" ng-click="select(contents.properties, $index, 1)">
+                <img src="http://larics.rasip.fer.hr/wp-content/uploads/2016/04/default-placeholder.png">
+              </a>
+            </div>
+            <p>{{property.description}}</p> 
+          </div>
+        </div>
+        <ul class="list-group" ng-show="property.showComments">
+          <li class="list-group-item" ng-repeat="comment in property.comments track by $index">
+            <div class="media">
+              <div class="media-left">
+                <a ng-click="friend(comment.user.email)">
+                  <img class="media-object" src="https://qph.ec.quoracdn.net/main-thumb-97398652-50-wgmlpetouxrdadknpjyzbssglkklaupt.jpeg">
+                </a>
+              </div>
+              <div class="media-body">
+                <a class="media-heading" ng-click="friend(comment.user.email)">
+                  <h5>
+                    {{comment.user.firstName+' '+comment.user.lastName}}
+                  </h5>
+                </a>
+                {{comment.comment_text}}
+              </div>
+            </div>
+          </li>
+              
+           
+        </ul> 
+        <div class="panel-body" ng-show="property.showComments && shared.data.hasLogin">
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <textarea ng-model="property.newComment" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <button class="btn btn-primary pull-right" ng-click="createComment(property)">Comment</button>
+            </div>
+          </div>
+        </div>
+        <div ng-if="shared.data.hasLogin && shared.data.profile.isAdmin" class="panel-footer">
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <button class="btn btn-danger pull-right" ng-click="deleteContent(property.self.id)">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-info" ng-if="currentLevel == 1" ng-repeat="franchise in contents.franchises track by $index">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <h3 ng-click="select(contents.franchises, $index, 2)">  
+                {{franchise.name}}
+              </h3> 
+            </div>
+            <div class="col-md-2 pull-right">
+              <h5 class="pull-right">
+                <a ng-click="franchise.showComments=!franchise.showComments">
+                  Comments
+                  <span class="caret"></span>
+                </a> 
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <a class="thumbnail" ng-click="select(contents.franchises, $index, 2)">
+                <img src="http://larics.rasip.fer.hr/wp-content/uploads/2016/04/default-placeholder.png">
+              </a>
+            </div>
+            <p>{{franchise.description}}</p> 
+          </div>
+        </div>
+        <ul class="list-group" ng-show="franchise.showComments">
+          <li class="list-group-item" ng-repeat="comment in franchise.comments track by $index">
+            <div class="media">
+              <div class="media-left">
+                <a ng-click="friend(comment.user.email)">
+                  <img class="media-object" src="https://qph.ec.quoracdn.net/main-thumb-97398652-50-wgmlpetouxrdadknpjyzbssglkklaupt.jpeg">
+                </a>
+              </div>
+              <div class="media-body">
+                <a class="media-heading" ng-click="friend(comment.user.email)">
+                  <h5>
+                    {{comment.user.firstName+' '+comment.user.lastName}}
+                  </h5>
+                </a>
+                {{comment.comment_text}}
+              </div>
+            </div>
+          </li>
+              
+           
+        </ul> 
+        <div class="panel-body" ng-show="franchise.showComments && shared.data.hasLogin">
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <textarea ng-model="franchise.newComment" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <button class="btn btn-primary pull-right" ng-click="createComment(franchise)">Comment</button>
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="shared.data.hasLogin && shared.data.profile.isAdmin" class="panel-footer">
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <button class="btn btn-danger pull-right" ng-click="deleteContent(franchise.self.id)">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-info" ng-if="currentLevel == 2" ng-repeat="serie in contents.series track by $index">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <h3 ng-click="select(contents.series, $index, 3)">  
+                {{serie.name}}
+              </h3> 
+            </div>
+            <div class="col-md-2 pull-right">
+              <h5 class="pull-right">
+                <a ng-click="serie.showComments=!serie.showComments">
+                  Comments
+                  <span class="caret"></span>
+                </a> 
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <a class="thumbnail" ng-click="select(contents.series, $index, 3)">
+                <img src="http://larics.rasip.fer.hr/wp-content/uploads/2016/04/default-placeholder.png">
+              </a>
+            </div>
+            <p>{{serie.description}}</p> 
+          </div>
+        </div>
+        <ul class="list-group" ng-show="serie.showComments">
+          <li class="list-group-item" ng-repeat="comment in serie.comments track by $index">
+            <div class="media">
+              <div class="media-left">
+                <a ng-click="friend(comment.user.email)">
+                  <img class="media-object" src="https://qph.ec.quoracdn.net/main-thumb-97398652-50-wgmlpetouxrdadknpjyzbssglkklaupt.jpeg">
+                </a>
+              </div>
+              <div class="media-body">
+                <a class="media-heading" ng-click="friend(comment.user.email)">
+                  <h5>
+                    {{comment.user.firstName+' '+comment.user.lastName}}
+                  </h5>
+                </a>
+                {{comment.comment_text}}
+              </div>
+            </div>
+          </li>
+              
+           
+        </ul> 
+        <div class="panel-body" ng-show="serie.showComments && shared.data.hasLogin">
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <textarea ng-model="serie.newComment" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <button class="btn btn-primary pull-right" ng-click="createComment(serie)">Comment</button>
+            </div>
+          </div>
+        </div>
+
+
+        <div ng-if="shared.data.hasLogin && shared.data.profile.isAdmin" class="panel-footer">
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <button class="btn btn-danger pull-right" ng-click="deleteContent(serie.self.id)">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-info" ng-if="currentLevel == 3" ng-repeat="episode in contents.episodes track by $index">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <h3>  
+                {{episode.name}}
+              </h3> 
+            </div>
+            <div class="col-md-2 pull-right">
+              <h5 class="pull-right">
+                <a ng-click="episode.showComments=!episode.showComments">
+                  Comments
+                  <span class="caret"></span>
+                </a> 
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <a class="thumbnail">
+                <img src="http://larics.rasip.fer.hr/wp-content/uploads/2016/04/default-placeholder.png">
+              </a>
+            </div>
+            <p>{{episode.description}}</p> 
+          </div>
+        </div>
+        <ul class="list-group" ng-show="episode.showComments">
+          <li class="list-group-item" ng-repeat="comment in episode.comments track by $index">
+            <div class="media">
+              <div class="media-left">
+                <a ng-click="friend(comment.user.email)">
+                  <img class="media-object" src="https://qph.ec.quoracdn.net/main-thumb-97398652-50-wgmlpetouxrdadknpjyzbssglkklaupt.jpeg">
+                </a>
+              </div>
+              <div class="media-body">
+                <a class="media-heading" ng-click="friend(comment.user.email)">
+                  <h5>
+                    {{comment.user.firstName+' '+comment.user.lastName}}
+                  </h5>
+                </a>
+                {{comment.comment_text}}
+              </div>
+            </div>
+          </li>
+              
+           
+        </ul> 
+        <div class="panel-body" ng-show="episode.showComments && shared.data.hasLogin">
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <textarea ng-model="episode.newComment" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <button class="btn btn-primary pull-right" ng-click="createComment(episode)">Comment</button>
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="shared.data.hasLogin && shared.data.profile.isAdmin" class="panel-footer">
+          <div class="row">
+            <div class="col-md-12 center-block">
+              <button class="btn btn-danger pull-right" ng-click="deleteContent(episode.self.id)">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
   <script type="text/ng-template" id="ProfileModal.html">
     <div class="modal-header text-center">
       <button type="button" class="close" ng-click="closeModal()">x</button>
-      <h3>Login</h3>
+      <h3>{{shared.data.hasLogin ? 'Profile' : 'Login'}}</h3>
     </div>
     <div class="modal-body">
         <div class="row">
@@ -128,6 +450,66 @@
           <button class="btn btn-primary" ng-show="!shared.data.hasLogin" ng-click="register()"> Register </button>
         </p>
     </div>
+    <!---
+    <div class="modal-footer">
+      <a ng-click="newUser=!newUser" href="#">{{newUser ? 'Already have account? Sign in now!' : 'New to us? Sign up now!'}}</a>
+    </div>
+    -->
+  </script>
+
+  <script type="text/ng-template" id="ViewProfileModal.html">
+    <div class="modal-header text-center">
+      <button type="button" class="close" ng-click="closeModal()">x</button>
+      <h3>Profile</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+          <div class="form-group col-lg-6">
+            <label>First Name</label>
+            <p>{{form.firstName}}</p>
+          </div>
+          <div class="form-group col-lg-6">
+            <label>Last Name</label>
+            <p>{{form.lastName}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-lg-6">
+            <label>Email</label>
+            <p>{{form.email}}</p>
+          </div>
+          <div class="form-group col-lg-6">
+            <label>Phone Number</label>
+            <p>{{form.phoneNumber}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-lg-9">
+            <label>Address</label>
+            <p>{{form.address.streetNumber+' '+form.address.street+', '+form.address.city+', '+form.address.zipCode}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-lg-9">
+            <label>Following</label>
+            <p><a ng-repeat="follow in form.followings" ng-click="selectOthers(follow.email)">{{follow.firstName+' '+follow.lastName}}</a></p>
+          </div>
+        </div>
+
+        <p>
+          <!--<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+          </fb:login-button>
+          -->
+          <button class="btn btn-primary" ng-show="shared.data.hasLogin && !hasFollow(form.email)" ng-click="followFriend(form.email, form.firstName, form.lastName)"> Follow </button>
+        </p>
+    </div>
+    <!---
+    <div class="modal-footer">
+      <a ng-click="newUser=!newUser" href="#">{{newUser ? 'Already have account? Sign in now!' : 'New to us? Sign up now!'}}</a>
+    </div>
+    -->
+  </script>
+
     <!---
     <div class="modal-footer">
       <a ng-click="newUser=!newUser" href="#">{{newUser ? 'Already have account? Sign in now!' : 'New to us? Sign up now!'}}</a>

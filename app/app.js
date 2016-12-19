@@ -32,12 +32,13 @@ ebase.factory('sharedServices', function($http) {
         data: {
             hasLogin: false,
             profile: null,
+            othersEmail: null,
+            newContent: null,
             urlGate: 'https://zii2wwqfd2.execute-api.us-east-1.amazonaws.com/project3_test/app'
         },
         services: {
-            generateParams: function(resource, op, params) {
+            generateParams: function(op, params) {
                 return {
-                    resource_name: resource,
                     operation: op,
                     params: params
                 }
@@ -51,6 +52,7 @@ ebase.factory('sharedServices', function($http) {
 
 ebase.controller('LoginController', function($scope, $uibModal, sharedServices) {
     $scope.shared = sharedServices;
+
     $scope.openRegisterDialog = function () {
         var modalInstance = $uibModal.open({
             templateUrl: 'ProfileModal.html',
@@ -75,6 +77,7 @@ ebase.controller('LoginController', function($scope, $uibModal, sharedServices) 
             controller: 'ProfileController'
         });
     };
+
 
 
 
@@ -159,11 +162,12 @@ ebase.controller('LoginController', function($scope, $uibModal, sharedServices) 
 
     //TODO(chaozc)
     $scope.getAccountProfile = function(email) {
-        params = $scope.shared.services.generateParams('customer', 'read', {email: email});
+        params = $scope.shared.services.generateParams('read_customer', {email: email});
         successfulCallback = function(response) {
             console.log(response.data);
             if (response.data.status_code == 200) {
                 $scope.shared.data.profile = response.data.response_body;
+                console.log($scope.shared.data.profile);
                 $scope.shared.data.hasLogin = true;
             } else {
                 $scope.openRegisterDialog();
@@ -183,12 +187,39 @@ ebase.controller('LoginController', function($scope, $uibModal, sharedServices) 
         //$scope.shared.data.profile = {first_name: "Zichen", last_name: "Chao", email: "zichen.chao@gmail.com", id: "2156565677901352"};
         //return $scope.shared.data.profile;
     }
+
+    //$scope.checkLoginState();
 })
 
 
-ebase.controller('ProfileController', function($scope, $uibModalInstance, sharedServices) {
+ebase.controller('ProfileController', function($scope, $uibModal, $uibModalInstance, sharedServices) {
     $scope.shared = sharedServices;
-    $scope.form = $scope.shared.data.profile;
+    $scope.closeModal = function(){
+       $uibModalInstance.close();
+       console.log('closed');
+    }
+    $scope.getUser = function(email) {
+        console.log(email);
+        params = $scope.shared.services.generateParams('read_customer', {email: email});
+        successfulCallback = function(response) {
+            $scope.form = response.data.response_body;
+            $scope.shared.data.profile = response.data.response_body;
+        };
+        errorCallback = function(response) {
+            console.log('bad:'+response.data);
+        };
+        $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
+
+    }
+    $scope.getUser($scope.shared.data.profile.email);
+    $scope.openProfileDialog = function () {
+        console.log($scope.shared.data.othersEmail);
+        $scope.closeModal();
+        var modalInstance = $uibModal.open({
+            templateUrl: 'ViewProfileModal.html',
+            controller: 'OthersProfileController'
+        });
+    };
     $scope.formValid = {
         email: true,
         firstName: true,
@@ -201,11 +232,70 @@ ebase.controller('ProfileController', function($scope, $uibModalInstance, shared
             zipCode: true
         }
     };
+    console.log($scope.form);
+    $scope.selectOthers = function(email) {
+        $scope.shared.data.othersEmail = email;
+        console.log(email);
+        $scope.openProfileDialog();
+    }
+});
+
+ebase.controller('OthersProfileController', function($scope, $uibModalInstance, sharedServices) {
+    $scope.shared = sharedServices;
+
+    $scope.getOtherUser = function(email) {
+        console.log(email);
+        params = $scope.shared.services.generateParams('read_customer', {email: email});
+        successfulCallback = function(response) {
+            $scope.form = response.data.response_body;
+        };
+        errorCallback = function(response) {
+            console.log('bad:'+response.data);
+        };
+        $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
+
+    }
+    $scope.getOtherUser($scope.shared.data.othersEmail);
     $scope.closeModal = function(){
        $uibModalInstance.close();
        console.log('closed');
     }
-    console.log($scope.form);
+
+
+    $scope.followFriend = function(email, firstName, lastName) {
+        if ($scope.hasFollow(email)) {
+            return;
+        }
+        params = $scope.shared.services.generateParams('create_following', {fromId: $scope.shared.data.profile.email, toId: id});
+        successfulCallback = function(response) {
+            $scope.shared.data.profile.followings.push({
+                lastName: lastName,
+                email: email,
+                firstName: firstName
+            });
+            console.log(response);
+        };
+        errorCallback = function(response) {
+            console.log('bad:'+response.data);
+        };
+        $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
+    }
+    $scope.hasFollow = function(email) {
+        if (email == $scope.shared.data.profile.email) {
+            return true;
+        }
+        for (var i = 0; i < $scope.shared.data.profile.followings.length; ++i) {
+            if ($scope.shared.data.profile.followings[i].email == email) {
+                return true;
+            }
+        }
+        return false
+    }
+    $scope.selectOthers = function(email) {
+        $scope.shared.data.othersEmail = email;
+        $scope.getOtherUser($scope.shared.data.othersEmail);
+    }
+
 });
 
 
@@ -291,7 +381,7 @@ ebase.controller('RegisterController', function($scope, $http, $uibModalInstance
         if (!$scope.checkRegisterValid()) {
             return;
         }
-        params = $scope.shared.services.generateParams('customer', 'create', $scope.form);
+        params = $scope.shared.services.generateParams('create_customer', $scope.form);
         successfulCallback = function(response) {
             console.log(response);
             console.log(response.data);
@@ -318,17 +408,236 @@ ebase.controller('RegisterController', function($scope, $http, $uibModalInstance
 });
 
 
-ebase.controller('ContentController', function($scope, $http, sharedServices, restfulFactory) {
+ebase.controller('ContentController', function($scope, $uibModal, $http, sharedServices, restfulFactory) {
     $scope.shared = sharedServices;
-    $scope.contentLevels = ['Property', 'NBC'];
+    $scope.contentLevels = ['Property'];
     $scope.currentLevel = 0;
-    //$scope.contents = {'Property'};
-    $scope.switchToLevel = function(level) {
-        $scope.currentLevel = level;
+    $scope.contents = {
+        properties: [],
+        franchises: [],
+        series: [],
+        episodes: []
+    };
+    $scope.current = [null, null, null, null];
+    $scope.newContent = null;
+
+    $scope.openFriendDialog = function () {
+        var modalInstance = $uibModal.open({
+            templateUrl: 'ViewProfileModal.html',
+            controller: 'OthersProfileController'
+        });
     };
 
-})
+    $scope.getChildren = function(op, param, parent) {
+        params = $scope.shared.services.generateParams(op, param);
+        successfulCallback = function(response) {
+            console.log('getChildren');
+            console.log(op);
+            console.log(params);
+            console.log(response);
+            if (parent.length > 0) {
+                parent.splice(0, parent.length);
+            }
+            for (var i = 0; i < response.data.length; ++i) {
+                parent.push(response.data[i]);
+                parent[i].newComment = "";
+            }
+            $scope.getComments(parent);
+            console.log(parent);
+            console.log($scope.contents);
+        };
+        errorCallback = function(response) {
+            console.log('bad:'+response.data);
+        };
+        $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
 
+    }
+
+    
+
+    $scope.getComment = function(content, show) {
+        params = $scope.shared.services.generateParams('read_content_comments', {content_id: content.self.id});
+        successfulCallback = function(response) {
+            content.showComments = show;
+            content.comments = response.data;
+        }
+        errorCallback = function(response) {
+            console.log('bad:'+response.data);
+        };
+        $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
+    }
+
+    $scope.getComments = function(contents) {
+        for (var i = 0; i < contents.length; ++i) {
+           $scope.getComment(contents[i], false); 
+        }
+
+    }
+
+    $scope.createComment = function(content) {
+        params = $scope.shared.services.generateParams('create_comment', {
+            comment: {
+                content: content.self.id,
+                user: $scope.shared.data.profile.email,
+                comment_text: content.newComment
+            }
+        });
+        errorCallback = function(response) {
+            console.log('bad:'+response.data);
+        };
+        successfulCallback = function(response) {
+            console.log(response);
+            $scope.getComment(content, true);
+        }
+        $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
+    }
+
+    $scope.switchToLevel = function(level) {
+        $scope.currentLevel = level;
+        $scope.showCreateContent = false;
+    };
+
+    $scope.select = function(parent, id, level) {
+        $scope.switchToLevel(level);
+        if ($scope.current[level-1] == null || parent[id].name != $scope.current[level-1].name) {
+            if (level < $scope.contentLevels.length) {
+                $scope.contentLevels.splice(level, $scope.contentLevels.length-level);
+            }
+            $scope.contentLevels.push(parent[id].name);
+            console.log("level");
+            console.log(level);
+            next = level == 1 ? $scope.contents.franchises : (level == 2 ? $scope.contents.series : $scope.contents.episodes);
+            $scope.getChildren('read_content_children', {id: parent[id].self.id}, next);
+            $scope.current[level-1] = {
+                name: parent[id].name,
+                id: parent[id].self.id
+            };
+            for (var i = level; i < 4; ++i) {
+                $scope.current[i] = null;
+            }
+        }
+        $scope.switchToLevel(level);
+    }
+
+    $scope.friend = function(email) {
+        $scope.shared.data.othersEmail = email;
+        $scope.openFriendDialog();
+    }
+
+    $scope.openCreateContentDialog = function () {
+        var modalInstance = $uibModal.open({
+            templateUrl: 'CreateContentModal.html',
+            controller: 'ContentController'
+        });
+    };
+
+    $scope.createContentSubmit = function() {
+        if ($scope.newContent.name == "" || $scope.newContent.description == "") {
+            alert("Empty name or description");
+            return;
+        }
+        console.log($scope.newContent);
+        params = $scope.shared.services.generateParams('create_content', $scope.newContent);
+        console.log(params);
+        errorCallback = function(response) {
+            console.log('bad:'+response.data);
+        };
+        successfulCallback = function(response) {
+            console.log(response);
+            console.log($scope.current);
+            if ($scope.currentLevel == 0) {
+                $scope.getChildren('read_properties', null, $scope.contents.properties);
+            } else {
+                next = $scope.currentLevel == 1 ? $scope.contents.franchises : ($scope.currentLevel == 2 ? $scope.contents.series : $scope.contents.episodes);
+                $scope.getChildren('read_content_children', {id: $scope.current[$scope.currentLevel-1].id}, next);
+            }
+            $scope.showCreateContent = false;
+        }
+        $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
+    }
+
+
+    $scope.createContent = function() {
+        var types = ['PROPERTY', 'FRANCHISE', 'SERIES', 'EPISODE'];
+
+        $scope.newContent = {
+            content_type: types[$scope.currentLevel],
+            name: "New Content",
+            description: "Descriptions"
+        }
+        if ($scope.currentLevel > 0) {
+            $scope.newContent.parent = $scope.current[$scope.currentLevel-1].id;
+        }
+        $scope.showCreateContent = true;
+        /**
+        $scope.shared.data.newContent = {
+            
+            parent: $scope.currentLevel > 0 ? $scope.current[$scope.currentLevel-1] : null
+        }
+        */
+        //$scope.openCreateContentDialog();
+        //while ($scope.shared.data.newContent != null) {}
+        
+    }
+
+    $scope.closeShowCreateContent = function() {
+        $scope.showCreateContent = false;
+    }
+
+    $scope.deleteContent = function(email) {
+        params = $scope.shared.services.generateParams('delete_content', {id: email});
+        errorCallback = function(response) {
+            console.log('bad:'+response.data);
+        };
+        successfulCallback = function(response) {
+            console.log(response);
+            console.log($scope.current);
+            if ($scope.currentLevel == 0) {
+                $scope.getChildren('read_properties', null, $scope.contents.properties);
+            } else {
+                next = $scope.currentLevel == 1 ? $scope.contents.franchises : ($scope.currentLevel == 2 ? $scope.contents.series : $scope.contents.episodes);
+                $scope.getChildren('read_content_children', {id: $scope.current[$scope.currentLevel-1].id}, next);
+            }
+        }
+        $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
+    }
+
+    $scope.getChildren('read_properties', null, $scope.contents.properties);
+    //console.log("ssss");
+    //console.log($scope.properties);
+});
+
+
+ebase.controller('CreateContentController', function($scope, $uibModalInstance, sharedServices) {
+    $scope.shared = sharedServices;
+
+    $scope.form = {
+        name: "",
+        content_type: $scope.shared.data.newContent.content_type,
+        description: ""
+    }
+    if ($scope.shared.data.newContent.parent != null) {
+        $scope.form.parent = $scope.shared.data.newContent.parent.id;
+    }
+    
+    $scope.closeModal = function(){
+       $uibModalInstance.close();
+       console.log('closed');
+    }
+    $scope.createContent = function() {
+        console.log($scope.form);
+        params = $scope.shared.services.generateParams('create_content', $scope.form);
+        console.log(params);
+        errorCallback = function(response) {
+            console.log('bad:'+response.data);
+        };
+        successfulCallback = function(response) {
+            console.log(response);
+            $scope.shared.data.newContent = null;
+        }
+        $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
+    }
+});
 
 ebase.controller('FormController', function($scope, $http, restfulFactory) {
         var urlGate = 'https://zii2wwqfd2.execute-api.us-east-1.amazonaws.com/project_2_test';
