@@ -443,6 +443,13 @@
             <input ng-model="form.address.zipCode" type="text" class="form-control" placeholder="Zip Code">
           </div>
         </div>
+
+        <div ng-show="shared.data.hasLogin" class="row">
+          <div class="form-group col-lg-9">
+            <label>Following</label>
+            <p><a ng-repeat="follow in shared.data.profile.followings" ng-click="selectOthers(follow.email)">{{follow.firstName+' '+follow.lastName+'   '}}</a></p>
+          </div>
+        </div>
         <p>
           <!--<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
           </fb:login-button>
@@ -492,7 +499,7 @@
         <div class="row">
           <div class="form-group col-lg-9">
             <label>Following</label>
-            <p><a ng-repeat="follow in form.followings" ng-click="selectOthers(follow.email)">{{follow.firstName+' '+follow.lastName}}</a></p>
+            <p><a ng-repeat="follow in form.followings" ng-click="selectOthers(follow.email)">{{follow.firstName+' '+follow.lastName+'   '}}</a></p>
           </div>
         </div>
 
