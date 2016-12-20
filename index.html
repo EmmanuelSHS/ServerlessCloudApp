@@ -508,6 +508,7 @@
           </fb:login-button>
           -->
           <button class="btn btn-primary" ng-show="shared.data.hasLogin && !hasFollow(form.email)" ng-click="followFriend(form.email, form.firstName, form.lastName)"> Follow </button>
+          <button class="btn btn-danger" ng-show="shared.data.hasLogin && hasFollow(form.email)" ng-click="unfollowFriend(form.email)"> Unfollow </button>
         </p>
     </div>
     <!---

@@ -280,6 +280,30 @@ ebase.controller('OthersProfileController', function($scope, $uibModalInstance, 
         };
         $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
     }
+
+    $scope.unfollowFriend = function(email) {
+        params = $scope.shared.services.generateParams('delete_following', {fromId: $scope.shared.data.profile.email, toId: email});
+        successfulCallback = function(response) {
+            var idx = -1;
+            for (var i = 0; i < $scope.shared.data.profile.followings.length; ++i) {
+                if ($scope.shared.data.profile.followings.email == email) {
+                    idx = i;
+                    break;
+                }
+            }
+            console.log($scope.shared.data.profile.followings);
+            console.log(idx);
+            $scope.shared.data.profile.followings.splice(idx, 1);
+            console.log($scope.shared.data.profile.followings);
+            
+            console.log(response);
+        };
+        errorCallback = function(response) {
+            console.log('bad:'+response.data);
+        };
+        $scope.shared.services.post($scope.shared.data.urlGate, params).then(successfulCallback, errorCallback);
+    }
+
     $scope.hasFollow = function(email) {
         if (email == $scope.shared.data.profile.email) {
             return true;
