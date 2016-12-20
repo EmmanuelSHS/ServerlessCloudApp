@@ -266,7 +266,7 @@ ebase.controller('OthersProfileController', function($scope, $uibModalInstance, 
         if ($scope.hasFollow(email)) {
             return;
         }
-        params = $scope.shared.services.generateParams('create_following', {fromId: $scope.shared.data.profile.email, toId: id});
+        params = $scope.shared.services.generateParams('create_following', {fromId: $scope.shared.data.profile.email, toId: email});
         successfulCallback = function(response) {
             $scope.shared.data.profile.followings.push({
                 lastName: lastName,
